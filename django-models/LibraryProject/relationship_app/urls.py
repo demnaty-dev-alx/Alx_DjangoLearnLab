@@ -1,5 +1,5 @@
 from django.urls import path
-import views
+from relationship_app import views
 from .views import list_books, LibraryDetailView, LoginView, LogoutView
 
 urlpatterns = [
