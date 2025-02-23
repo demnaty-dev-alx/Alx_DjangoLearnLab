@@ -55,3 +55,18 @@ def librarian(request):
 @user_passes_test(is_member)
 def member(request):
     return render(request, 'relationship_app/member_view.html')
+
+from django.contrib.auth.decorators import permission_required
+from django.shortcuts import redirect
+
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    return redirect('book_list')
+
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, book_id):
+    return redirect('book_list')
+
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, book_id):
+    return redirect('book_list')
