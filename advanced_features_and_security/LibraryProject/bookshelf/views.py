@@ -1,25 +1,25 @@
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import render, get_object_or_404
-from .models import Article
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Book
 
 @permission_required('bookshelf.can_view', raise_exception=True)
-def article_list(request):
-    articles = Article.objects.all()
-    return render(request, 'articles/list.html', {'articles': articles})
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'books/list.html', {'books': books})
 
 @permission_required('bookshelf.can_create', raise_exception=True)
-def create_article(request):
-    # Logic to create an article
+def create_book(request):
+    # Logic to create an book
     pass
 
 @permission_required('bookshelf.can_edit', raise_exception=True)
-def edit_article(request, article_id):
-    article = get_object_or_404(Article, id=article_id)
-    # Logic to edit the article
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    # Logic to edit the book
     pass
 
 @permission_required('bookshelf.can_delete', raise_exception=True)
-def delete_article(request, article_id):
-    article = get_object_or_404(Article, id=article_id)
-    article.delete()
-    return redirect('article_list')
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    book.delete()
+    return redirect('book_list')
