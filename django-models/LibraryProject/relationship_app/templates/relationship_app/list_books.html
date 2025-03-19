@@ -12,5 +12,9 @@
         <li>{{ book.title }} by {{ book.author.name }}</li>
         {% endfor %}
     </ul>
+    <form method="POST" action="{% url 'relationship_app:logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>
