@@ -6,7 +6,7 @@ def book_list(request):
       """Retrieves all books and renders a template displaying the list."""
       books = Book.objects.all()
       context = {'books': books}
-      return render(request, 'list_books.html', context)
+      return render(request, 'relationship_app/list_books.html', context)
 
 class LibraryDetailView(DetailView):
     model = Library
