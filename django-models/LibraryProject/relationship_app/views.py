@@ -35,7 +35,7 @@ def is_admin(user):
         return user.profile.role == UserProfile.Roles.ADMIN
     return False
 
-@user_passes_test(is_admin, login_url='relationship_app:login')
+@user_passes_test(is_admin)
 def admin_view(request):
     return HttpResponse(content=f"Welcome {request.user.username} to the admin page")
 
