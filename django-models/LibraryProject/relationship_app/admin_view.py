@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import user_passes_test
 from .models import UserProfile
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render
 
 def is_admin(user):
     if user.is_authenticated:
@@ -9,4 +9,4 @@ def is_admin(user):
 
 @user_passes_test(is_admin, login_url='relationship_app:login')
 def admin_view(request):
-    return HttpResponse(content=f"Welcome {request.user.username} to the admin page")
+    return render(request, 'admin_view.html')
