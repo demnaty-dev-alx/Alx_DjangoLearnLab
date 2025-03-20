@@ -42,7 +42,7 @@ def admin_view(request):
 
 def is_librarian(user):
     if user.is_authenticated:
-        return user.profile.role == UserProfile.Roles.LIBRARIAN
+        return user.profile.role == UserProfile.Roles.LIBRARIANS
     return False
 
 @user_passes_test(is_librarian, login_url='relationship_app:login')
