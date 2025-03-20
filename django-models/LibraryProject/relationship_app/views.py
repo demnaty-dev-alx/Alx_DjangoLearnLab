@@ -4,7 +4,7 @@ from .models import Library
 from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 
 def list_books(request):
       """Retrieves all books and renders a template displaying the list."""
@@ -57,3 +57,15 @@ def is_member(user):
 @user_passes_test(is_member, login_url='relationship_app:login')
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
+
+@permission_required('book.can_add_book', raise_exception=True)
+def add_book(request):
+    pass
+
+@permission_required('book.can_change_book', raise_exception=True)
+def edit_book(request, book_id):
+    pass
+
+@permission_required('book.can_delete_book', raise_exception=True)
+def delete_book(request, book_id):
+    pass
