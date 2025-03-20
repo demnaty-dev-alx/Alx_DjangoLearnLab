@@ -11,7 +11,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(template_name='relationship_app/login.html', next_page='relationship_app:books',redirect_authenticated_user=True), name='login'),
     path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
     path('register/', views.register, name='register'),
-    #path('admin/', views.AdminView.as_view(), name='admin'),
+    path('admin/', views.admin_view, name='admin'),
     path('librarian/', views.librarian_view, name='librarian'),
     path('member/', views.member_view, name='member'),
 ]
