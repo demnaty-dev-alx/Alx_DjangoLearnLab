@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from .models import Book, UserProfile
 from .models import Library
 from django.views.generic.detail import DetailView
@@ -58,14 +58,14 @@ def is_member(user):
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
-@permission_required('book.can_add_book', raise_exception=True)
+@permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
-    pass
+    return HttpResponse(content="add book")
 
-@permission_required('book.can_change_book', raise_exception=True)
+@permission_required('relationship_app.can_change_book', raise_exception=True)
 def edit_book(request, book_id):
-    pass
+    return HttpResponse(content="edit book")
 
-@permission_required('book.can_delete_book', raise_exception=True)
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
 def delete_book(request, book_id):
-    pass
+    return HttpResponse(content="delete book")
