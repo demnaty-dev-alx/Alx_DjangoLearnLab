@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import Book
+from .models import Book, UserProfile
 from .models import Library
 from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-#from .admin_view import AdminView
-from .lebrarian_view import librarian_view
-from .member_view import member_view
+from django.contrib.auth.decorators import user_passes_test
 
 def list_books(request):
       """Retrieves all books and renders a template displaying the list."""
@@ -32,9 +30,6 @@ def register(request):
 
     return render(request, "relationship_app/register.html", {"form": form})
 
-from django.contrib.auth.decorators import user_passes_test
-from .models import UserProfile
-from django.shortcuts import HttpResponse
 
 def is_admin(user):
     if user.is_authenticated:
@@ -42,5 +37,23 @@ def is_admin(user):
     return False
 
 @user_passes_test(is_admin, login_url='relationship_app:login')
-def Admin(request):
-    return HttpResponse(content=f"Welcome {request.user.username} to the admin page")
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+def is_librarian(user):
+    if user.is_authenticated:
+        return user.profile.role == UserProfile.Roles.LIBRARIAN
+    return False
+
+@user_passes_test(is_librarian, login_url='relationship_app:login')
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+def is_member(user):
+    if user.is_authenticated:
+        return user.profile.role == UserProfile.Roles.MEMBER
+    return False
+
+@user_passes_test(is_member, login_url='relationship_app:login')
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')
