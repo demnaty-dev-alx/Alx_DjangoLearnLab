@@ -8,5 +8,5 @@ def is_admin(user):
     return False
 
 @user_passes_test(is_admin, login_url='relationship_app:login')
-def admin_view(request):
+def Admin(request):
     return HttpResponse(content=f"Welcome {request.user.username} to the admin page")
