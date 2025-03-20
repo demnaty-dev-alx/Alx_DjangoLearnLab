@@ -4,7 +4,7 @@ from django.shortcuts import HttpResponse
 
 def is_admin(user):
     if user.is_authenticated:
-        return user.profile.role == UserProfile.Roles.ADMIN
+        return user.profile.role == 'Admin'
     return False
 
 @user_passes_test(is_admin, login_url='relationship_app:login')
