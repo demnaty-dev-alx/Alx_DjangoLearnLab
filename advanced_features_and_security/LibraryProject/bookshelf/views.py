@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import HttpResponse, redirect, render
 from .forms import ExampleForm
+from .models import Book
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
@@ -14,9 +15,10 @@ def book_list(request):
     - request: The HTTP request object.
 
     Returns:
-    - HttpResponse: A response containing the list of books (in this case, a placeholder message).
+    - HttpResponse: A response containing the list of books.
     """
-    return HttpResponse(content="List of Books")
+    books = Book.objects.all()  # Get all books from the database
+    return render(request, 'bookshelf/book_list.html', {'books': books})
 
 @permission_required('bookshelf.can_create', raise_exception=True)
 def create_book(request):
