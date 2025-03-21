@@ -168,3 +168,9 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 # Enable the browser's built-in XSS filter to help mitigate cross-site scripting attacks
 SECURE_BROWSER_XSS_FILTER = True
+
+# HTTP_X_FORWARDED_PROTO is the header that the proxy (e.g., Nginx or Apache) sends to indicate whether the original request was made using HTTPS.
+# 'https' tells Django that if the header is present and contains the value 'https', it should treat the connection as HTTPS, even if it is actually coming in over HTTP.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# USE_X_FORWARDED_HOST is set to True to allow Django to use the X-Forwarded-Host header, which contains the original host requested by the client.
+USE_X_FORWARDED_HOST = True
