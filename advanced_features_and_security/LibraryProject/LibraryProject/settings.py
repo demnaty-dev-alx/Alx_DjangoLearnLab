@@ -127,15 +127,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
-# Use Secure Cookies for CSRF and Sessions
-CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are only sent over HTTPS.
-SESSION_COOKIE_SECURE = True  # Ensure session cookies are only sent over HTTPS.
-
-# Use HTTPS Only and Redirect HTTP to HTTPS
-# SECURE_SSL_REDIRECT = True  # Force redirect from HTTP to HTTPS for security.
-SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS filtering.
-X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking by denying framing from other websites.
-SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent browsers from interpreting files as a different MIME type.
 
 # Example CSP settings
 CSP_DEFAULT_SRC = ("'self'",)  # Only allow loading content from the same domain
@@ -143,3 +134,37 @@ CSP_DEFAULT_SRC = ("'self'",)  # Only allow loading content from the same domain
 # CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com")  # Allow styles from self and a specific external domain
 # CSP_IMG_SRC = ("'self'", "https://images.example.com")  # Allow images from self and a specific external domain
 # CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")  # Allow fonts from self and Google Fonts
+
+# Step 1: Configure Django for HTTPS Support
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+# Enforce HTTPS for all future connections for the next year (31536000 seconds)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+# Include all subdomains in the HSTS policy
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# Allow your site to be added to the HSTS preload list
+SECURE_HSTS_PRELOAD = True
+
+
+# Step 2: Enforce Secure Cookies
+
+# Ensure that session cookies are only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+# Ensure that CSRF cookies are only sent over HTTPS
+CSRF_COOKIE_SECURE = True
+# Make session and CSRF cookies HttpOnly to prevent access by JavaScript
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+# Optional: Expire the session cookie when the browser is closed
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+# Step 3: Implement Secure Headers
+
+# Prevent the site from being embedded in an iframe (Clickjacking prevention)
+X_FRAME_OPTIONS = 'DENY'
+# Prevent MIME sniffing and force respect for declared content types
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# Enable the browser's built-in XSS filter to help mitigate cross-site scripting attacks
+SECURE_BROWSER_XSS_FILTER = True
