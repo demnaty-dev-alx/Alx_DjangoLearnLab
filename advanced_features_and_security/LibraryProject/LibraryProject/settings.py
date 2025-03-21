@@ -22,10 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ddd=p_13_1ejd(6(iwyk0&5)o+4zny5a2)^b(zbot7t55gul+-'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# Security Settings for Production Environment
+DEBUG = False  # Never set DEBUG to True in production. It reveals sensitive info.
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # List only trusted domains to prevent host header attacks.
 
 
 # Application definition
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     'relationship_app',
+    'csp', # Install django-csp App
 ]
 
 MIDDLEWARE = [
@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',  # Enable CSP for protecting against XSS attacks.
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -125,3 +126,20 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+# Use Secure Cookies for CSRF and Sessions
+CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are only sent over HTTPS.
+SESSION_COOKIE_SECURE = True  # Ensure session cookies are only sent over HTTPS.
+
+# Use HTTPS Only and Redirect HTTP to HTTPS
+# SECURE_SSL_REDIRECT = True  # Force redirect from HTTP to HTTPS for security.
+SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS filtering.
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking by denying framing from other websites.
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent browsers from interpreting files as a different MIME type.
+
+# Example CSP settings
+CSP_DEFAULT_SRC = ("'self'",)  # Only allow loading content from the same domain
+# CSP_SCRIPT_SRC = ("'self'", "https://apis.example.com")  # Allow scripts from self and a specific external domain
+# CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com")  # Allow styles from self and a specific external domain
+# CSP_IMG_SRC = ("'self'", "https://images.example.com")  # Allow images from self and a specific external domain
+# CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")  # Allow fonts from self and Google Fonts
