@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, redirect, render
+from .forms import ExampleForm
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
@@ -31,7 +32,15 @@ def create_book(request):
     Returns:
     - HttpResponse: A response indicating that the book creation process has been triggered (placeholder message).
     """
-    return HttpResponse(content="Create Book")
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the new book to the database
+            return redirect('book_list')  # Redirect to a page that lists books (you can modify this as needed)
+    else:
+        form = ExampleForm()
+
+    return render(request, 'bookshelf/form_example.html', {'form': form})
 
 @permission_required('bookshelf.can_edit', raise_exception=True)
 def edit_book(request, book_id):
