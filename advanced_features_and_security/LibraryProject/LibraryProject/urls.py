@@ -22,5 +22,6 @@ from django.urls import path,include
 urlpatterns = [
     path('', RedirectView.as_view(url=reverse_lazy('relationship_app:login'), permanent=False)),
     path('admin/', admin.site.urls),
-    path('relationship_app/', include('relationship_app.urls', namespace='relationship_app'))
+    path('relationship_app/', include('relationship_app.urls', namespace='relationship_app')),
+    path('bookshelf/', include('bookshelf.urls', namespace='bookshelf')),
 ]

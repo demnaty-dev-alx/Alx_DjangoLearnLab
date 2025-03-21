@@ -6,6 +6,15 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     publication_year = models.IntegerField()  # Fixed missing parenthesis
 
+    class Meta:
+        app_label = 'bookshelf'
+        permissions = [
+            ("can_view", "Can view book 1"),
+            ("can_create", "Can create book 2"),
+            ("can_edit", "Can edit book 3"),
+            ("can_delete", "Can delete book 4"),
+        ]
+
     def __str__(self):
         return f"{self.title} by {self.author} ({self.publication_year})"
 
