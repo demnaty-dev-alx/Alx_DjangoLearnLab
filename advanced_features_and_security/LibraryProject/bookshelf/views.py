@@ -38,7 +38,7 @@ def create_book(request):
         form = ExampleForm(request.POST)
         if form.is_valid():
             form.save()  # Save the new book to the database
-            return redirect('book_list')  # Redirect to a page that lists books (you can modify this as needed)
+            return redirect('bookshelf:view')  # Redirect to a page that lists books (you can modify this as needed)
     else:
         form = ExampleForm()
 
