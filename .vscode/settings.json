@@ -1,0 +1,13 @@
+{
+    "files.exclude": {
+        "advanced_features_and_security": true,
+        "advanced-api-project": true,
+        "api_project": true,
+        "django_blog": false,
+        "django-models": true,
+        "Introduction_to_Django": true,
+        "env": true,
+        ".gitignore": true,
+        "README.md": true,
+    }
+}
