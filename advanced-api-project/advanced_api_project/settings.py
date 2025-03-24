@@ -45,8 +45,8 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  # Enables token authentication
         'rest_framework.authentication.SessionAuthentication',  # For web login users
+        'rest_framework.authentication.TokenAuthentication',  # Enables token authentication
         'rest_framework.authentication.BasicAuthentication',  # Basic auth for testing
     ],
     'DEFAULT_PERMISSION_CLASSES': [

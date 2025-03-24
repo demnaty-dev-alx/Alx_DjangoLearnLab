@@ -15,7 +15,7 @@ class BookListViewTests(APITestCase):
 
     def test_list_books_authenticated(self):
         """Test retrieving the list of books as an authenticated user"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(user=self.user)
         response = self.client.get('/api/books/')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -39,7 +39,7 @@ class BookDetailViewTests(APITestCase):
 
     def test_retrieve_book_authenticated(self):
         """Test retrieving a single book as an authenticated user"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(user=self.user)
         response = self.client.get(f'/api/books/{self.book.id}/')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -55,7 +55,7 @@ class BookDetailViewTests(APITestCase):
 
     def test_retrieve_non_existent_book(self):
         """Test that retrieving a non-existent book returns 404"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(user=self.user)
         response = self.client.get('/api/books/999/')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -70,7 +70,7 @@ class BookCreateViewTests(APITestCase):
 
     def test_create_book_authenticated(self):
         """Test creating a book as an authenticated user"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(user=self.user)
         data = {
             "title": "New Book",
             "publication_year": 2023,
@@ -104,7 +104,7 @@ class BookUpdateViewTests(APITestCase):
 
     def test_update_book_authenticated(self):
         """Test updating an existing book as an authenticated user"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(user=self.user)
         data = {
             "title": "Updated Harry Potter",
             "publication_year": 2000,
@@ -140,7 +140,7 @@ class BookDeleteViewTests(APITestCase):
 
     def test_delete_book_authenticated(self):
         """Test deleting a book as an authenticated user"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(user=self.user)
         response = self.client.delete(f'/api/books/delete/{self.book.id}/')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
