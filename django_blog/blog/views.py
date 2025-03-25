@@ -13,12 +13,12 @@ def register(request):
             return redirect('blog:profile')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'blog/register.html', {'form': form})
 
 @login_required(login_url='blog:login')
 def profile(request):
     profile = Profile.objects.get(user=request.user)
-    return render(request, 'accounts/profile.html', {'profile': profile})
+    return render(request, 'blog/profile.html', {'profile': profile})
 
 @login_required
 def profile_edit(request):
@@ -37,7 +37,7 @@ def profile_edit(request):
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=profile)
 
-    return render(request, 'accounts/profile_edit.html', {
+    return render(request, 'blog/profile_edit.html', {
         'user_form': user_form,
         'profile_form': profile_form
     })
