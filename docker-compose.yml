@@ -2,7 +2,10 @@ services:
   db:
     image: postgres:13-alpine
     container_name: postgres_db
-    restart: always
+    restart: no
+    # restart: always
+    # restart: unless-stopped
+    # restart: on-failure:3  # Retries up to 3 times on failure
     environment:
       POSTGRES_DB: mydatabase
       POSTGRES_USER: myuser
