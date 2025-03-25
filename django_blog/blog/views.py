@@ -32,7 +32,7 @@ def profile_edit(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect('profile')  # Redirect to profile page after saving
+            return redirect('blog:profile')  # Redirect to profile page after saving
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=profile)
