@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(pattern_name='blog:profile')),
+    path('', RedirectView.as_view(pattern_name='blog:post-list')),
     path('blog/', include('blog.urls', namespace='blog')),
 ]
 
