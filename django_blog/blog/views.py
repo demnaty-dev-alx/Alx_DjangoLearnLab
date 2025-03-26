@@ -182,7 +182,8 @@ class PostSearchView(ListView):
         query = self.request.GET.get('q')
         queryset = Post.objects.filter(
             Q(title__icontains=query) |
-            Q(content__icontains=query)
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
         ).distinct()
 
         return queryset
