@@ -1,0 +1,15 @@
+<h1>Search Results</h1>
+
+{% if posts %}
+    <p>Found {{ posts.count }} result(s) for "{{ query }}".</p>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{% url 'blog:post-detail' pk=post.pk %}">{{ post.title }}</a>
+                <p>{{ post.content|truncatewords:30 }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No posts found for "{{ query }}".</p>
+{% endif %}
