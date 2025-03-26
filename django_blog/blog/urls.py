@@ -4,6 +4,7 @@ from . import views
 from .views import (
     PostListView, PostDetailView, PostCreateView,
     PostUpdateView, PostDeleteView, CommentCreateView,
+    CommentUpdateView, CommentDeleteView
 )
 
 app_name = 'blog'
@@ -20,6 +21,6 @@ urlpatterns = [
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-edit'),  # Edit post
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),  # Delete post
     path('post/<int:post_id>/comment/', CommentCreateView.as_view(), name='add-comment'),
-    path('comment/<int:comment_id>/edit/', views.edit_comment, name='edit-comment'),
-    path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete-comment'),
+    path('comment/<int:pk>/edit/', CommentUpdateView.as_view(), name='edit-comment'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='delete-comment'),
 ]
