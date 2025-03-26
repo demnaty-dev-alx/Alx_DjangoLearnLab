@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Post, Comment, Tag
+from .models import Profile, Post, Comment
+from taggit.forms import TagField
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
@@ -30,23 +31,19 @@ class UserUpdateForm(forms.ModelForm):
         fields = ['username', 'email']
 
 class PostForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),  # Fetch existing tags
-        widget=forms.CheckboxSelectMultiple,  # Display as checkboxes
-        required=False  # Allow posts without tags
-    )
+    # Include TagField to handle tag input
+    tags = TagField(required=False)  # TagField will allow users to add tags
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'tags']  # Include tags in the form
+        fields = ['title', 'content', 'tags']
 
-    def save(self, commit=True):
-        """Custom save method to handle tag creation."""
-        post = super().save(commit=False)
-        if commit:
-            post.save()
-            self.save_m2m()  # Save many-to-many relationships (tags)
-        return post
+    # def save(self, commit=True):
+    #     """Custom save method to handle tag creation."""
+    #     post = super().save(commit=False)
+    #     if commit:
+    #         post.save()
+    #     return post
 
 class CommentForm(forms.ModelForm):
     class Meta:

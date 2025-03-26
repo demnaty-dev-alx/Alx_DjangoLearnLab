@@ -1,10 +1,16 @@
 {% extends "blog/base.html" %}
+
 {% block content %}
-    <h2>{% if object %}Edit Post{% else %}New Post{% endif %}</h2>
-    <form method="post">
+    <h1>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Post</h1>
+
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}  <!-- This will render the title, content, and tags fields -->
-        <button type="submit">Save</button>
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">
+            {% if form.instance.pk %}Update{% else %}Create{% endif %} Post
+        </button>
     </form>
-    <a href="{% url 'blog:post-list' %}">Cancel</a>
+
+    <a href="{% url 'blog:post-list' %}" class="btn btn-secondary mt-3">Back to Posts</a>
 {% endblock %}
