@@ -76,9 +76,18 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('blog:login')
 
     def form_valid(self, form):
-        form.instance.author = self.request.user  # Set author to logged-in user
+        # Automatically assign the logged-in user as the post author
+        form.instance.author = self.request.user
         response = super().form_valid(form)
+
+        # Handle tags after the post is saved
+        self.handle_tags(form.cleaned_data.get('tags'))
         return response
+
+    def handle_tags(self, tags):
+        """Ensure all selected tags exist and associate them with the post."""
+        for tag in tags:
+            self.object.tags.add(tag)  # Add tag to post
 
 # ✅ UpdateView - Allow only the author to edit posts
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -92,8 +101,18 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == post.author  # Allow only the post author to edit
 
     def form_valid(self, form):
+        # Save the updated post
         response = super().form_valid(form)
+
+        # Clear existing tags and add the newly selected tags
+        self.object.tags.clear()
+        self.handle_tags(form.cleaned_data.get('tags'))
         return response
+
+    def handle_tags(self, tags):
+        """Ensure all selected tags exist and associate them with the post."""
+        for tag in tags:
+            self.object.tags.add(tag)  # Add tag to post
 
 # ✅ DeleteView - Allow only the author to delete posts
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
