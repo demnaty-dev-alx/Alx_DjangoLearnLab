@@ -10,6 +10,7 @@ from .forms import (
     UserUpdateForm, PostForm, CommentForm
 )
 from .models import Profile, Post, Comment
+from taggit.models import Tag
 
 
 def register(request):
@@ -174,23 +175,34 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class PostSearchView(ListView):
     model = Post
-    template_name = 'blog/post_search_results.html'
+    template_name = 'blog/post_list.html'  # Reuse the post list template
     context_object_name = 'posts'
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        queryset = Post.objects.all()
-
-        if query:
-            queryset = Post.objects.filter(
-                Q(title__icontains=query) |
-                Q(content__icontains=query) |
-                Q(tags__name__icontains=query)
-            ).distinct()
+        queryset = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query)
+        ).distinct()
 
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q', '')  # Pass query to template
+        return context
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'  # Reuse the post list template
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get('tag_slug')
+        self.tag = get_object_or_404(Tag, slug=tag_slug)  # Get the tag object
+        return Post.objects.filter(tags__in=[self.tag])  # Filter posts by tag
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.tag  # Pass the tag to the template
         return context
