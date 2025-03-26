@@ -56,6 +56,12 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-published_date']  # Show newest posts first
 
+    def get_queryset(self):
+        # Prefetch the related tags for all posts in the queryset
+        queryset = super().get_queryset()
+        queryset = queryset.prefetch_related('tags')
+        return queryset
+
 # ✅ DetailView - Show individual blog posts
 class PostDetailView(DetailView):
     model = Post

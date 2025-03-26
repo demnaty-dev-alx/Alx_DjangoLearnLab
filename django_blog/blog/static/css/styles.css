@@ -83,3 +83,23 @@ button:hover {
     list-style-type: none;
     padding: 0;
 }
+
+/* Tag Styling */
+.tags {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.tags span {
+    background-color: #07b975;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tags span:hover {
+    background-color: #06925c;
+}
