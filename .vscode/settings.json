@@ -3,7 +3,7 @@
         "advanced_features_and_security": true,
         "advanced-api-project": true,
         "api_project": true,
-        "django_blog": false,
+        "django_blog": true,
         "django-models": true,
         "Introduction_to_Django": true,
         "env": true,
@@ -11,6 +11,7 @@
         "README.md": true,
         "docker-compose.yml": true,
         "**/__pycache__": true,
+        "requirement.txt":true,
     },
     "explorer.autoReveal": false,
 }
