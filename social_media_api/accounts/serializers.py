@@ -10,7 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'bio', 'profile_picture', 'followers', 'token')
 
     def get_token(self, obj):
-        token, created = Token.objects.get_or_create(user=obj)
+        try:
+            token = Token.objects.get(user=obj)
+        except Token.DoesNotExist:
+            token = Token.objects.create(user=obj)
         return token.key
 
 
