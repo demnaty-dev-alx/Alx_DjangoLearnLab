@@ -1,17 +1,18 @@
 {
     "files.exclude": {
+        ".gitignore": true,
+        "**/__pycache__": true,
         "advanced_features_and_security": true,
         "advanced-api-project": true,
         "api_project": true,
         "django_blog": true,
         "django-models": true,
-        "Introduction_to_Django": true,
-        "env": true,
-        ".gitignore": true,
-        "README.md": true,
         "docker-compose.yml": true,
-        "**/__pycache__": true,
-        "requirement.txt":true,
+        "env": true,
+        "Introduction_to_Django": true,
+        "README.md": true,
+        "requirement.txt": true,
+        "social_media_api": false
     },
     "explorer.autoReveal": false,
 }
