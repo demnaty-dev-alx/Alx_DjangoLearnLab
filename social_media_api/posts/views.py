@@ -1,7 +1,8 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, generics,permissions, filters
 from rest_framework.exceptions import PermissionDenied
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
+
 
 class PostViewSet(viewsets.ModelViewSet):
     """
@@ -50,3 +51,15 @@ class CommentViewSet(viewsets.ModelViewSet):
         if instance.author != self.request.user:
             raise PermissionDenied("You do not have permission to delete this comment.")
         instance.delete()
+
+class FeedView(generics.ListAPIView):
+    """
+    Returns a feed of posts from users the authenticated user follows.
+    """
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        following_users = user.following.all()  # Get all users the authenticated user follows
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
