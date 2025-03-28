@@ -3,7 +3,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import authenticate
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, FollowSerializer
+from .serializers import (
+    RegisterSerializer, LoginSerializer, UserSerializer,
+    FollowSerializer, UserListSerializer
+)
 from .models import CustomUser
 
 class RegisterView(APIView):
@@ -93,3 +96,13 @@ class ListFollowingView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return user.following.all()  # Get all users the current user is following
+
+class ListUsersView(generics.ListAPIView):
+    """
+    List all registered users.
+    """
+    serializer_class = UserListSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users can see the list
+
+    def get_queryset(self):
+        return CustomUser.objects.all()  # Returns all users in the system

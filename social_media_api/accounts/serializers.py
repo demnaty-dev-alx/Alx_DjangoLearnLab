@@ -43,6 +43,17 @@ class UserSerializer(serializers.ModelSerializer):
             token = Token.objects.create(user=obj)
         return token.key
 
+class UserListSerializer(serializers.ModelSerializer):
+    """
+    Serializer used for listing users (excludes token).
+    """
+
+    followers_count = serializers.IntegerField(source='followers.count', read_only=True)
+    following_count = serializers.IntegerField(source='following.count', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'bio', 'profile_picture', 'followers_count', 'following_count')
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
