@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, filters
 from rest_framework.exceptions import PermissionDenied
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
@@ -9,9 +9,10 @@ class PostViewSet(viewsets.ModelViewSet):
     """
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]  # Only authenticated users can interact
+    queryset = Post.objects.all().order_by('-created_at')
 
-    def get_queryset(self):
-        return Post.objects.all().order_by('-created_at')  # Order posts by newest first
+    filter_backends = [filters.SearchFilter]  # Enables search filtering
+    search_fields = ['title', 'content']  # Searchable fields
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)  # Set the logged-in user as the author
