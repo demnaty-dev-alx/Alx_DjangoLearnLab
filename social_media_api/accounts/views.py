@@ -1,12 +1,10 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, FollowSerializer
-
-
-User = get_user_model()
+from .models import CustomUser
 
 class RegisterView(APIView):
     def post(self, request):
@@ -44,8 +42,8 @@ class FollowUserView(APIView):
 
     def post(self, request, user_id):
         try:
-            user_to_follow = User.objects.get(id=user_id)
-        except User.DoesNotExist:
+            user_to_follow = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if request.user == user_to_follow:
@@ -63,24 +61,26 @@ class UnfollowUserView(APIView):
 
     def post(self, request, user_id):
         try:
-            user_to_unfollow = User.objects.get(id=user_id)
-        except User.DoesNotExist:
+            user_to_unfollow = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         request.user.unfollow(user_to_unfollow)
         return Response({"message": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
 
 
-class ListFollowersView(generics.ListAPIView):
+class ListFollowersView(generics.GenericAPIView, mixins.ListModelMixin):
     """
-    List all followers of a user.
+    List all followers of the current user.
     """
     serializer_class = FollowSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        return user.followers.all()  # Get all users following the current user
+        return self.request.user.followers.all()  # Returns all users following the current user
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class ListFollowingView(generics.ListAPIView):
