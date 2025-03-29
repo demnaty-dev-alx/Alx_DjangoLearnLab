@@ -1,7 +1,13 @@
-from rest_framework import viewsets, generics,permissions, filters
+from rest_framework import viewsets, generics,permissions, filters, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from django.shortcuts import get_object_or_404
+from django.contrib.contenttypes.models import ContentType
+from posts.models import Post, Comment, Like
+from posts.serializers import PostSerializer, CommentSerializer, LikeSerializer
+from notifications.models import Notification
+
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -63,3 +69,53 @@ class FeedView(generics.ListAPIView):
         user = self.request.user
         following_users = user.following.all()  # Get all users the authenticated user follows
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
+
+
+class LikePostView(APIView):
+    """
+    Allows a user to like a post.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+
+        # Check if the user has already liked this post
+        if Like.objects.filter(user=request.user, post=post).exists():
+            return Response({"error": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a like instance
+        like = Like.objects.create(user=request.user, post=post)
+
+        # Create a notification for the post author
+        if post.author != request.user:  # Avoid self-notification
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target=post,
+                target_ct=ContentType.objects.get_for_model(post)
+            )
+
+        serializer = LikeSerializer(like)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UnlikePostView(APIView):
+    """
+    Allows a user to unlike a post.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+
+        # Check if the user has liked the post
+        like = Like.objects.filter(user=request.user, post=post).first()
+        if not like:
+            return Response({"error": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Remove the like
+        like.delete()
+
+        return Response({"message": "Post unliked successfully."}, status=status.HTTP_200_OK)
