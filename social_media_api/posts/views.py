@@ -2,7 +2,6 @@ from rest_framework import viewsets, generics,permissions, filters, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from posts.models import Post, Comment, Like
 from posts.serializers import PostSerializer, CommentSerializer, LikeSerializer
@@ -78,27 +77,29 @@ class LikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
 
-        # Check if the user has already liked this post
-        if Like.objects.filter(user=request.user, post=post).exists():
-            return Response({"error": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+        # Try to get or create a like for the post by the current user
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
 
-        # Create a like instance
-        like = Like.objects.create(user=request.user, post=post)
+        if created:
+            # Create a notification for the post author
+            if post.author != request.user:  # Avoid self-notification
+                Notification.objects.create(
+                    recipient=post.author,
+                    actor=request.user,
+                    verb="liked your post",
+                    target=post,
+                    target_ct=ContentType.objects.get_for_model(post)
+                )
 
-        # Create a notification for the post author
-        if post.author != request.user:  # Avoid self-notification
-            Notification.objects.create(
-                recipient=post.author,
-                actor=request.user,
-                verb="liked your post",
-                target=post,
-                target_ct=ContentType.objects.get_for_model(post)
-            )
+            serializer = LikeSerializer(like)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            # If the like already exists, return a message saying the post is already liked
+            return Response({"message": "You have already liked this post"}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = LikeSerializer(like)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 
 class UnlikePostView(APIView):
@@ -108,7 +109,7 @@ class UnlikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
 
         # Check if the user has liked the post
         like = Like.objects.filter(user=request.user, post=post).first()
