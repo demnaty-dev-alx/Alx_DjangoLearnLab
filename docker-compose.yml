@@ -1,7 +1,7 @@
 services:
-  db:
+  db_django_blog:
     image: postgres:13-alpine
-    container_name: postgres_db
+    container_name: django_blog_db
     restart: no
     # restart: always
     # restart: unless-stopped
@@ -14,6 +14,22 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  db_social_media_api:
+    image: postgres:13-alpine
+    container_name: social_media_api
+    restart: no
+    # restart: always
+    # restart: unless-stopped
+    # restart: on-failure:3  # Retries up to 3 times on failure
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5433:5432"  # Exposing port 5432 of the container on port 5433 of your machine to avoid conflict
+    volumes:
+      - postgres_social_media_data:/var/lib/postgresql/data  # Persist data for the social media API database
 
 volumes:
-  postgres_data:
+  postgres_data:  # Volume for the Django blog database
+  postgres_social_media_data:  # Volume for the social media API database

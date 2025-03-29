@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-x6e27_8=df=5#32&a25$6&fg^m01h%!1t$e+$=v01kr#@uor=-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -88,8 +88,12 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',
+        'PORT': '5433',  # Default is 5432 for PostgreSQL
     }
 }
 
@@ -136,3 +140,11 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS filtering
+X_FRAME_OPTIONS = 'DENY'  # Prevent your site from being embedded in a frame (clickjacking protection)
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent browsers from guessing content types
+SECURE_SSL_REDIRECT = False  # Redirect all HTTP connections to HTTPS (requires SSL setup)
+
+CSRF_COOKIE_SECURE = True  # CSRF cookie should only be sent over HTTPS
+SESSION_COOKIE_SECURE = True  # Session cookie should only be sent over HTTPS
