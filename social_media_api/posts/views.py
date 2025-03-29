@@ -77,8 +77,8 @@ class LikePostView(APIView):
     """
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
 
         # Check if the user has already liked this post
         if Like.objects.filter(user=request.user, post=post).exists():
@@ -107,8 +107,8 @@ class UnlikePostView(APIView):
     """
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, post_id):
-        post = get_object_or_404(Post, id=post_id)
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
 
         # Check if the user has liked the post
         like = Like.objects.filter(user=request.user, post=post).first()
